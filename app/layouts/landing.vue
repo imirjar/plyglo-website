@@ -6,10 +6,9 @@
 
 <style>
 .navbar {
-  background: #ffffff;
-  /* backdrop-filter: blur(5px); */
-  border-radius: 1rem;
+  background: transparent;
   position: sticky;
   top: 0;
+  z-index: 40;
 }
 </style>

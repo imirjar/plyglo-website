@@ -128,10 +128,11 @@
     <header class="flex flex-col lg:flex-row justify-between items-center my-5">
       <div class="flex w-full lg:w-auto items-center justify-between">
         <a href="/">
-          <img src="~/assets/img/poliglotim.svg" alt="Poliglotim Login" class="h-16"> 
+          <img src="~/assets/img/poliglotim.svg" alt="Poliglotim Login" class="h-16 dark:hidden">
+          <img src="~/assets/img/poliglotim_white.svg" alt="Poliglotim Login" class="hidden h-16 dark:block">
         </a>
         <div class="block lg:hidden">
-          <button @click="open = !open" class="text-gray-800">
+          <button @click="open = !open" class="text-gray-800 dark:text-slate-100">
             <svg
               fill="currentColor"
               class="w-4 h-4"
@@ -231,7 +232,7 @@
             >
               <a 
                 href="/dashboard"
-                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors dark:text-slate-200 dark:hover:bg-slate-800"
               >
                 <div class="flex items-center gap-2">
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -242,7 +243,7 @@
               </a>
               <button
                 @click="signOut"
-                class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+                class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors dark:text-slate-200 dark:hover:bg-slate-800"
               >
                 <div class="flex items-center gap-2">
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
