@@ -1,4 +1,6 @@
 <script setup lang="ts">
+const { t } = useI18n();
+
 const user = ref({
   login: '',
   password: '',
@@ -11,12 +13,12 @@ const validate = () => {
   formError.value = '';
   
   if (!user.value.login.trim()) {
-    formError.value = 'Введите имя пользователя';
+    formError.value = t('login.missingUsername');
     return false;
   }
 
   if (!user.value.password) {
-    formError.value = 'Введите пароль';
+    formError.value = t('login.missingPassword');
     return false;
   }
 
@@ -40,7 +42,7 @@ const login = async () => {
     
     await navigateTo('/');
   } catch (error: any) {
-    formError.value = error.data?.message || error.message || 'Ошибка при входе';
+    formError.value = error.data?.message || error.message || t('login.error');
     console.error('Login error:', error);
   } finally {
     isLoading.value = false;
@@ -58,13 +60,13 @@ const login = async () => {
 
         <div class="form-fields">
           <LoginTextField
-            label="Имя пользователя"
+            :label="t('login.username')"
             v-model="user.login"
             :disabled="isLoading"
           />
 
           <LoginTextField
-            label="Пароль"
+            :label="t('login.password')"
             v-model="user.password"
             :obscureText="true"
             :disabled="isLoading"

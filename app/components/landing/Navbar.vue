@@ -4,9 +4,9 @@
   import { computed, onMounted, onUnmounted, ref } from 'vue'
 
     const isUserMenuOpen = ref(false)
-    const currentLanguage = ref('RU')
     const themeMode = ref<'system' | 'light' | 'dark'>('system')
     let mediaQuery: MediaQueryList | null = null
+    const { currentLocaleLabel, locale, locales, setLocale, t } = useI18n()
     
     const toggleUserMenu = () => {
         console.log("toggle")
@@ -46,15 +46,6 @@
         applyTheme()
     }
 
-    const toggleLanguage = () => {
-        currentLanguage.value = currentLanguage.value === 'RU' ? 'EN' : 'RU'
-
-        if (import.meta.client) {
-            document.documentElement.lang = currentLanguage.value.toLowerCase()
-            localStorage.setItem('language', currentLanguage.value)
-        }
-    }
-
     const themeIcon = computed(() => {
         if (themeMode.value === 'dark') {
             return 'bx:moon'
@@ -69,29 +60,23 @@
 
     const themeTitle = computed(() => {
         if (themeMode.value === 'dark') {
-            return 'Темная тема'
+            return t('common.theme.dark')
         }
 
         if (themeMode.value === 'light') {
-            return 'Светлая тема'
+            return t('common.theme.light')
         }
 
-        return 'Системная тема'
+        return t('common.theme.system')
     })
 
     onMounted(() => {
-        const savedLanguage = localStorage.getItem('language')
         const savedThemeMode = localStorage.getItem('theme-mode')
-
-        if (savedLanguage === 'RU' || savedLanguage === 'EN') {
-            currentLanguage.value = savedLanguage
-        }
 
         if (savedThemeMode === 'system' || savedThemeMode === 'light' || savedThemeMode === 'dark') {
             themeMode.value = savedThemeMode
         }
 
-        document.documentElement.lang = currentLanguage.value.toLowerCase()
         mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
         mediaQuery.addEventListener('change', applyTheme)
         applyTheme()
@@ -107,15 +92,15 @@
     //   path: "#",
     // },
     {
-      title: "Обучение",
+      titleKey: "common.nav.study",
       path: "/study",
     },
     {
-      title: "Магазин",
+      titleKey: "common.nav.shop",
       path: "/shop",
     },
     {
-      title: "Путешествия",
+      titleKey: "common.nav.travel",
       path: "/travel",
     },
   ];
@@ -139,7 +124,7 @@
               viewBox="0 0 20 20"
               xmlns="http://www.w3.org/2000/svg"
             >
-              <title>Меню</title>
+              <title>{{ t('common.nav.menu') }}</title>
               <path
                 v-show="open"
                 fill-rule="evenodd"
@@ -165,20 +150,40 @@
               :href="item.path"
               class="flex lg:px-3 py-2 text-gray-600 hover:text-gray-900 dark:text-slate-300 dark:hover:text-white"
             >
-              {{ item.title }}
+              {{ t(item.titleKey) }}
             </a>
             
           </li>
         </ul>
         <div class="lg:hidden flex flex-wrap items-center mt-3 gap-3">
-          <button
-            type="button"
-            class="flex h-10 min-w-10 items-center justify-center rounded border border-slate-300 px-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
-            :title="`Язык: ${currentLanguage}`"
-            @click="toggleLanguage"
-          >
-            {{ currentLanguage }}
-          </button>
+          <div class="language-menu relative">
+            <button
+              type="button"
+              class="flex h-10 min-w-10 items-center justify-center gap-1 rounded border border-slate-300 px-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 focus:bg-slate-100 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800 dark:focus:bg-slate-800"
+              :title="`${t('common.nav.language')}: ${currentLocaleLabel}`"
+              aria-haspopup="true"
+            >
+              {{ currentLocaleLabel }}
+              <Icon name="bx:chevron-down" class="h-4 w-4" />
+            </button>
+            <div
+              class="language-menu-list absolute left-0 top-full z-50 hidden min-w-28 pt-2"
+            >
+              <div class="rounded-md border border-slate-200 bg-white py-1 shadow-lg dark:border-slate-700 dark:bg-slate-900">
+                <button
+                  v-for="item in locales"
+                  :key="item.code"
+                  type="button"
+                  class="flex w-full items-center justify-between gap-3 px-3 py-2 text-left text-sm text-slate-700 transition hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800"
+                  :class="{ 'font-semibold': item.code === locale }"
+                  @click="setLocale(item.code)"
+                >
+                  {{ item.label }}
+                  <Icon v-if="item.code === locale" name="bx:check" class="h-4 w-4" />
+                </button>
+              </div>
+            </div>
+          </div>
           <button
             type="button"
             class="flex h-10 min-w-10 items-center justify-center rounded border border-slate-300 text-slate-700 transition hover:bg-slate-100 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
@@ -187,20 +192,40 @@
           >
             <Icon :name="themeIcon" class="h-5 w-5" />
           </button>
-          <LandingLink v-if="!data.data?.isAuthenticated" href="/dashboard" size="md">Войти</LandingLink>
-          <LandingLink v-else href="/logout" styleName="muted" block size="md">Выйти</LandingLink>
+          <LandingLink v-if="!data.data?.isAuthenticated" href="/dashboard" size="md">{{ t('common.nav.login') }}</LandingLink>
+          <LandingLink v-else href="/logout" styleName="muted" block size="md">{{ t('common.nav.logout') }}</LandingLink>
         </div>
       </nav>
       <div>
         <div class="hidden lg:flex items-center gap-3">
-          <button
-            type="button"
-            class="flex h-10 min-w-10 items-center justify-center rounded border border-slate-300 px-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
-            :title="`Язык: ${currentLanguage}`"
-            @click="toggleLanguage"
-          >
-            {{ currentLanguage }}
-          </button>
+          <div class="language-menu relative">
+            <button
+              type="button"
+              class="flex h-10 min-w-10 items-center justify-center gap-1 rounded border border-slate-300 px-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 focus:bg-slate-100 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800 dark:focus:bg-slate-800"
+              :title="`${t('common.nav.language')}: ${currentLocaleLabel}`"
+              aria-haspopup="true"
+            >
+              {{ currentLocaleLabel }}
+              <Icon name="bx:chevron-down" class="h-4 w-4" />
+            </button>
+            <div
+              class="language-menu-list absolute right-0 top-full z-50 hidden min-w-28 pt-2"
+            >
+              <div class="rounded-md border border-slate-200 bg-white py-1 shadow-lg dark:border-slate-700 dark:bg-slate-900">
+                <button
+                  v-for="item in locales"
+                  :key="item.code"
+                  type="button"
+                  class="flex w-full items-center justify-between gap-3 px-3 py-2 text-left text-sm text-slate-700 transition hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800"
+                  :class="{ 'font-semibold': item.code === locale }"
+                  @click="setLocale(item.code)"
+                >
+                  {{ item.label }}
+                  <Icon v-if="item.code === locale" name="bx:check" class="h-4 w-4" />
+                </button>
+              </div>
+            </div>
+          </div>
           <button
             type="button"
             class="flex h-10 min-w-10 items-center justify-center rounded border border-slate-300 text-slate-700 transition hover:bg-slate-100 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
@@ -210,7 +235,7 @@
             <Icon :name="themeIcon" class="h-5 w-5" />
           </button>
           <!-- <a href="#">Войти</a> -->
-          <LandingLink v-if="!data.data?.isAuthenticated" href="/dashboard" size="md">Войти</LandingLink>
+          <LandingLink v-if="!data.data?.isAuthenticated" href="/dashboard" size="md">{{ t('common.nav.login') }}</LandingLink>
           <div v-else class="relative">
             <button 
               v-on:click="toggleUserMenu"
@@ -221,7 +246,7 @@
                 alt="User Avatar"
                 class="w-8 h-8 rounded-full object-cover border-2 border-white shadow-sm"
                 >
-                <span class="text-gray-700 font-medium dark:text-slate-200">Иван Петров</span>
+                <span class="text-gray-700 font-medium dark:text-slate-200">{{ t('dashboard.userName') }}</span>
             </button>
             
             <!-- Выпадающее меню -->
@@ -238,7 +263,7 @@
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                   </svg>
-                  Личный кабинет
+                  {{ t('common.nav.account') }}
                 </div>
               </a>
               <button
@@ -249,7 +274,7 @@
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                   </svg>
-                  Выйти
+                  {{ t('common.nav.logout') }}
                 </div>
               </button>
             </div>
@@ -268,5 +293,10 @@
   .fade-enter-from, .fade-leave-to {
     opacity: 0;
     transform: translateY(-10px);
+  }
+
+  .language-menu:hover .language-menu-list,
+  .language-menu:focus-within .language-menu-list {
+    display: block;
   }
 </style>

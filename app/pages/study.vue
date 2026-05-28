@@ -1,41 +1,13 @@
-<script setup>
+<script setup lang="ts">
 definePageMeta({
   layout: "landing",
 });
 
-const courseSteps = [
-  {
-    title: "Учитесь бесплатно",
-    description:
-      "Открывайте главы курса, проходите материалы и возвращайтесь к ним в удобном темпе без оплаты за доступ.",
-    icon: "bx:book-open",
-  },
-  {
-    title: "Проверяйте главу тестом",
-    description:
-      "В конце каждой главы можно пройти платный тест и получить подтверждение знаний по этой теме.",
-    icon: "bx:check-shield",
-  },
-  {
-    title: "Собирайте подтверждения",
-    description:
-      "Когда подтверждены все главы курса, курс считается пройденным и готовится электронный сертификат.",
-    icon: "bx:badge-check",
-  },
-];
+const { t, tm } = useI18n();
 
-const benefits = [
-  "Материалы курса доступны бесплатно",
-  "Платите только за итоговую проверку главы",
-  "Подтверждения фиксируют реальный прогресс",
-  "Электронный сертификат выдается после прохождения всего курса",
-];
-
-const languages = [
-  "Английский язык",
-  "Китайский язык",
-  "Французский язык",
-];
+const courseSteps = computed(() => tm<Array<{ title: string; description: string; icon: string }>>("study.steps"));
+const benefits = computed(() => tm<string[]>("study.benefits"));
+const languages = computed(() => tm<string[]>("study.languages"));
 </script>
 
 <template>
@@ -43,22 +15,20 @@ const languages = [
     <section class="grid gap-10 py-14 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:py-20">
       <div>
         <p class="text-sm font-semibold uppercase text-slate-500">
-          Обучение без барьера на входе
+          {{ t('study.eyebrow') }}
         </p>
         <h1 class="mt-4 max-w-3xl text-3xl font-bold leading-tight text-slate-950 sm:text-4xl lg:text-5xl">
-          Учитесь бесплатно, подтверждайте знания тогда, когда готовы
+          {{ t('study.title') }}
         </h1>
         <p class="mt-5 max-w-2xl text-lg leading-8 text-slate-600">
-          Доступ к обучающим материалам остается бесплатным. Оплачиваемой частью
-          становится только тест в конце главы: он помогает зафиксировать результат
-          и постепенно собрать подтверждения для сертификата.
+          {{ t('study.description') }}
         </p>
         <div class="mt-8 flex flex-col gap-3 sm:flex-row">
           <LandingLink href="https://app.plyglo.com" styleName="primary">
-            Начать обучение
+            {{ t('study.start') }}
           </LandingLink>
           <LandingLink href="/shop" styleName="outline">
-            Посмотреть курсы
+            {{ t('study.browse') }}
           </LandingLink>
         </div>
       </div>
@@ -66,11 +36,11 @@ const languages = [
       <div class="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
         <div class="flex flex-col items-start justify-between gap-4 border-b border-slate-200 pb-5 sm:flex-row sm:items-center">
           <div>
-            <p class="text-sm text-slate-500">Стоимость обучения</p>
+            <p class="text-sm text-slate-500">{{ t('study.costLabel') }}</p>
             <p class="mt-1 text-3xl font-bold text-slate-950">0₽</p>
           </div>
           <div class="rounded-full bg-emerald-100 px-4 py-2 text-sm font-semibold text-emerald-700">
-            Бесплатный доступ
+            {{ t('study.freeAccess') }}
           </div>
         </div>
 
@@ -92,10 +62,10 @@ const languages = [
     <section class="py-10">
       <div class="max-w-3xl">
         <p class="text-sm font-semibold uppercase text-slate-500">
-          Как это работает
+          {{ t('study.how') }}
         </p>
         <h2 class="mt-3 text-3xl font-bold text-slate-950">
-          Прогресс строится по главам
+          {{ t('study.progressTitle') }}
         </h2>
       </div>
 
@@ -126,15 +96,13 @@ const languages = [
     <section class="grid gap-8 py-12 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
       <div>
         <p class="text-sm font-semibold uppercase text-slate-500">
-          Сертификат
+          {{ t('study.certificateEyebrow') }}
         </p>
         <h2 class="mt-3 text-3xl font-bold text-slate-950">
-          Электронный документ после всего курса
+          {{ t('study.certificateTitle') }}
         </h2>
         <p class="mt-4 leading-8 text-slate-600">
-          Сертификат выдается, когда по каждой главе курса есть подтверждение
-          знаний. Так итоговый статус отражает не просто просмотр материалов, а
-          последовательное прохождение всей программы.
+          {{ t('study.certificateText') }}
         </p>
       </div>
 
@@ -149,8 +117,7 @@ const languages = [
             {{ language }}
           </h3>
           <p class="mt-2 text-sm leading-6 text-slate-600">
-            Бесплатные главы, платные подтверждающие тесты и сертификат после
-            прохождения курса.
+            {{ t('study.languageCardText') }}
           </p>
         </div>
       </div>

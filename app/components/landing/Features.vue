@@ -1,24 +1,7 @@
-<script setup>
-const features = [
-  {
-    title: "Английский язык",
-    description:
-      "Курс по изучению английского языка для всех уровней.",
-    icon: "bx:bxs-briefcase",
-  },
-  {
-    title: "Китайский язык",
-    description:
-      "Курс по изучению китайского языка и культуры.",
-    icon: "bx:bxs-window-alt",
-  },
-  {
-    title: "Французский язык",
-    description:
-      "Изучение французского языка и культуры Франции.",
-    icon: "bx:bxs-data",
-  },
-];
+<script setup lang="ts">
+const { tm } = useI18n();
+
+const features = computed(() => tm<Array<{ title: string; description: string; icon: string }>>("study.steps"));
 </script>
 
 <template>

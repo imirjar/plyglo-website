@@ -1,37 +1,12 @@
-<script setup>
+<script setup lang="ts">
 definePageMeta({
   layout: "landing",
 });
 
-const shopHighlights = [
-  {
-    title: "Дидактические материалы",
-    description:
-      "Карточки, рабочие тетради, задания и дополнительные материалы, которые помогают закреплять темы из курсов.",
-    icon: "bx:collection",
-  },
-  {
-    title: "Литература на языках мира",
-    description:
-      "Книги, адаптированные тексты и издания на разных языках для чтения, практики и знакомства с культурой.",
-    icon: "bx:book-bookmark",
-  },
-  {
-    title: "Материалы для самостоятельной практики",
-    description:
-      "Подборки для тех, кто хочет учиться в своем темпе и дополнять занятия живыми примерами языка.",
-    icon: "bx:pencil",
-  },
-];
+const { t, tm } = useI18n();
 
-const categories = [
-  "Учебники и рабочие тетради",
-  "Карточки и наглядные материалы",
-  "Адаптированная литература",
-  "Книги на языке оригинала",
-  "Материалы для преподавателей",
-  "Практические задания к курсам",
-];
+const shopHighlights = computed(() => tm<Array<{ title: string; description: string; icon: string }>>("shop.highlights"));
+const categories = computed(() => tm<string[]>("shop.categories"));
 </script>
 
 <template>
@@ -42,20 +17,17 @@ const categories = [
           shop.plyglo.com
         </p>
         <h1 class="mt-4 max-w-3xl text-3xl font-bold leading-tight text-slate-950 sm:text-4xl lg:text-5xl">
-          Магазин материалов для языковой практики
+          {{ t('shop.title') }}
         </h1>
         <p class="mt-5 max-w-2xl text-lg leading-8 text-slate-600">
-          В магазине можно будет приобрести дидактические материалы для обучения
-          и литературу на разных языках мира. Это пространство для тех, кто хочет
-          не просто пройти курс, а продолжить практику через книги, задания и
-          полезные учебные инструменты.
+          {{ t('shop.description') }}
         </p>
         <div class="mt-8 flex flex-col gap-3 sm:flex-row">
           <LandingLink href="https://shop.plyglo.com" styleName="primary">
-            Перейти в магазин
+            {{ t('shop.open') }}
           </LandingLink>
           <LandingLink href="/study" styleName="outline">
-            К обучению
+            {{ t('common.courseCta') }}
           </LandingLink>
         </div>
       </div>
@@ -67,10 +39,10 @@ const categories = [
           </span>
           <div>
             <p class="text-sm font-semibold uppercase text-slate-500">
-              Что внутри
+              {{ t('shop.inside') }}
             </p>
             <h2 class="mt-2 text-2xl font-bold text-slate-950">
-              Все, что помогает языку стать привычкой
+              {{ t('shop.insideTitle') }}
             </h2>
           </div>
         </div>
@@ -90,10 +62,10 @@ const categories = [
     <section class="py-10">
       <div class="max-w-3xl">
         <p class="text-sm font-semibold uppercase text-slate-500">
-          Для учебы и вдохновения
+          {{ t('shop.inspiration') }}
         </p>
         <h2 class="mt-3 text-3xl font-bold text-slate-950">
-          Материалы под разные цели
+          {{ t('shop.goalsTitle') }}
         </h2>
       </div>
 

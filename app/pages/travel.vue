@@ -1,34 +1,12 @@
-<script setup>
+<script setup lang="ts">
 definePageMeta({
   layout: "landing",
 });
 
-const travelIdeas = [
-  {
-    title: "Выбирайте страну по языку",
-    description:
-      "После курса проще смотреть на карту не как на список мест, а как на пространство, где можно говорить и понимать людей.",
-    icon: "bx:map",
-  },
-  {
-    title: "Практикуйте язык в дороге",
-    description:
-      "Заказ еды, билеты, экскурсии, разговоры с местными жителями и новые знакомства превращают знания в навык.",
-    icon: "bx:conversation",
-  },
-  {
-    title: "Открывайте культуру глубже",
-    description:
-      "Язык помогает читать вывески, понимать контекст, замечать детали и чувствовать страну не только глазами туриста.",
-    icon: "bx:compass",
-  },
-];
+const { t, tm } = useI18n();
 
-const routes = [
-  "Английский для путешествий по Европе, Азии и Америке",
-  "Французский для Франции, Бельгии, Канады и других франкоязычных стран",
-  "Китайский для поездок в Китай и знакомства с современной культурой",
-];
+const travelIdeas = computed(() => tm<Array<{ title: string; description: string; icon: string }>>("travel.ideas"));
+const routes = computed(() => tm<string[]>("travel.routes"));
 </script>
 
 <template>
@@ -39,20 +17,17 @@ const routes = [
           travel.plyglo.com
         </p>
         <h1 class="mt-4 max-w-3xl text-3xl font-bold leading-tight text-slate-950 sm:text-4xl lg:text-5xl">
-          Направьте язык туда, где он оживает
+          {{ t('travel.title') }}
         </h1>
         <p class="mt-5 max-w-2xl text-lg leading-8 text-slate-600">
-          Полученные в обучении навыки стоит использовать в путешествиях по
-          странам, язык которых вы выучили. Поездка становится продолжением
-          курса: вы слышите живую речь, пробуете говорить сами и лучше
-          понимаете культуру.
+          {{ t('travel.description') }}
         </p>
         <div class="mt-8 flex flex-col gap-3 sm:flex-row">
           <LandingLink href="https://travel.plyglo.com" styleName="primary">
-            Перейти к путешествиям
+            {{ t('travel.open') }}
           </LandingLink>
           <LandingLink href="https://app.plyglo.com" styleName="outline">
-            Учиться перед поездкой
+            {{ t('travel.studyBefore') }}
           </LandingLink>
         </div>
       </div>
@@ -64,15 +39,13 @@ const routes = [
           </span>
           <div>
             <p class="text-sm font-semibold uppercase text-slate-500">
-              Идея направления
+              {{ t('travel.idea') }}
             </p>
             <h2 class="mt-2 text-2xl font-bold text-slate-950">
-              Сначала язык, потом страна
+              {{ t('travel.ideaTitle') }}
             </h2>
             <p class="mt-3 leading-7 text-slate-600">
-              Обучение дает основу, а путешествие помогает закрепить ее в
-              настоящих ситуациях: в кафе, музее, аэропорту, на улице и в
-              разговорах с людьми.
+              {{ t('travel.ideaText') }}
             </p>
           </div>
         </div>
@@ -93,10 +66,10 @@ const routes = [
     <section class="py-10">
       <div class="max-w-3xl">
         <p class="text-sm font-semibold uppercase text-slate-500">
-          Зачем ехать
+          {{ t('travel.why') }}
         </p>
         <h2 class="mt-3 text-3xl font-bold text-slate-950">
-          Путешествие превращает знания в опыт
+          {{ t('travel.experienceTitle') }}
         </h2>
       </div>
 
