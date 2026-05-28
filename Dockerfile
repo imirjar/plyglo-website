@@ -8,9 +8,9 @@ RUN npm ci
 COPY . .
 RUN npm run generate
 
-FROM nginx:1.27-alpine
+FROM caddy:2-alpine
 
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-COPY --from=build /app/.output/public /usr/share/nginx/html
+COPY Caddyfile /etc/caddy/Caddyfile
+COPY --from=build /app/.output/public /usr/share/caddy
 
 EXPOSE 80

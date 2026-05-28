@@ -1,9 +1,12 @@
 <script setup lang="ts">
 
   const  data  = ref(await useFetch('/api/check-auth'));
-  import { ref } from 'vue'
+  import { computed, onMounted, onUnmounted, ref } from 'vue'
 
     const isUserMenuOpen = ref(false)
+    const currentLanguage = ref('RU')
+    const themeMode = ref<'system' | 'light' | 'dark'>('system')
+    let mediaQuery: MediaQueryList | null = null
     
     const toggleUserMenu = () => {
         console.log("toggle")
@@ -22,6 +25,81 @@
             console.error('Ошибка при выходе:', error)
         }
     }
+
+    const applyTheme = () => {
+        if (!import.meta.client) {
+            return
+        }
+
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+        const shouldUseDark = themeMode.value === 'dark' || (themeMode.value === 'system' && prefersDark)
+
+        document.documentElement.classList.toggle('dark', shouldUseDark)
+        document.documentElement.dataset.theme = themeMode.value
+        localStorage.setItem('theme-mode', themeMode.value)
+    }
+
+    const toggleTheme = () => {
+        const modes: Array<'system' | 'light' | 'dark'> = ['system', 'light', 'dark']
+        const currentIndex = modes.indexOf(themeMode.value)
+        themeMode.value = modes[(currentIndex + 1) % modes.length]
+        applyTheme()
+    }
+
+    const toggleLanguage = () => {
+        currentLanguage.value = currentLanguage.value === 'RU' ? 'EN' : 'RU'
+
+        if (import.meta.client) {
+            document.documentElement.lang = currentLanguage.value.toLowerCase()
+            localStorage.setItem('language', currentLanguage.value)
+        }
+    }
+
+    const themeIcon = computed(() => {
+        if (themeMode.value === 'dark') {
+            return 'bx:moon'
+        }
+
+        if (themeMode.value === 'light') {
+            return 'bx:sun'
+        }
+
+        return 'bx:desktop'
+    })
+
+    const themeTitle = computed(() => {
+        if (themeMode.value === 'dark') {
+            return 'Темная тема'
+        }
+
+        if (themeMode.value === 'light') {
+            return 'Светлая тема'
+        }
+
+        return 'Системная тема'
+    })
+
+    onMounted(() => {
+        const savedLanguage = localStorage.getItem('language')
+        const savedThemeMode = localStorage.getItem('theme-mode')
+
+        if (savedLanguage === 'RU' || savedLanguage === 'EN') {
+            currentLanguage.value = savedLanguage
+        }
+
+        if (savedThemeMode === 'system' || savedThemeMode === 'light' || savedThemeMode === 'dark') {
+            themeMode.value = savedThemeMode
+        }
+
+        document.documentElement.lang = currentLanguage.value.toLowerCase()
+        mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
+        mediaQuery.addEventListener('change', applyTheme)
+        applyTheme()
+    })
+
+    onUnmounted(() => {
+        mediaQuery?.removeEventListener('change', applyTheme)
+    })
 
   const menuitems = [
     // {
@@ -84,28 +162,52 @@
           <li v-for="item of menuitems">
             <a
               :href="item.path"
-              class="flex lg:px-3 py-2 text-gray-600 hover:text-gray-900"
+              class="flex lg:px-3 py-2 text-gray-600 hover:text-gray-900 dark:text-slate-300 dark:hover:text-white"
             >
               {{ item.title }}
             </a>
             
           </li>
-          <li>
-            <a
-              href="/dashboard"
-              class="flex lg:px-3 py-2 text-gray-600 hover:text-gray-900"
-            >
-              Личный кабинет
-            </a>
-          </li>
         </ul>
-        <div class="lg:hidden flex items-center mt-3 gap-4">
-          <LandingLink v-if="!data.data?.isAuthenticated" href="/dashboard" size="md" block>Войти</LandingLink>
+        <div class="lg:hidden flex flex-wrap items-center mt-3 gap-3">
+          <button
+            type="button"
+            class="flex h-10 min-w-10 items-center justify-center rounded border border-slate-300 px-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
+            :title="`Язык: ${currentLanguage}`"
+            @click="toggleLanguage"
+          >
+            {{ currentLanguage }}
+          </button>
+          <button
+            type="button"
+            class="flex h-10 min-w-10 items-center justify-center rounded border border-slate-300 text-slate-700 transition hover:bg-slate-100 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
+            :title="themeTitle"
+            @click="toggleTheme"
+          >
+            <Icon :name="themeIcon" class="h-5 w-5" />
+          </button>
+          <LandingLink v-if="!data.data?.isAuthenticated" href="/dashboard" size="md">Войти</LandingLink>
           <LandingLink v-else href="/logout" styleName="muted" block size="md">Выйти</LandingLink>
         </div>
       </nav>
       <div>
-        <div class="hidden lg:flex items-center gap-4">
+        <div class="hidden lg:flex items-center gap-3">
+          <button
+            type="button"
+            class="flex h-10 min-w-10 items-center justify-center rounded border border-slate-300 px-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
+            :title="`Язык: ${currentLanguage}`"
+            @click="toggleLanguage"
+          >
+            {{ currentLanguage }}
+          </button>
+          <button
+            type="button"
+            class="flex h-10 min-w-10 items-center justify-center rounded border border-slate-300 text-slate-700 transition hover:bg-slate-100 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
+            :title="themeTitle"
+            @click="toggleTheme"
+          >
+            <Icon :name="themeIcon" class="h-5 w-5" />
+          </button>
           <!-- <a href="#">Войти</a> -->
           <LandingLink v-if="!data.data?.isAuthenticated" href="/dashboard" size="md">Войти</LandingLink>
           <div v-else class="relative">
@@ -118,13 +220,13 @@
                 alt="User Avatar"
                 class="w-8 h-8 rounded-full object-cover border-2 border-white shadow-sm"
                 >
-                <span class="text-gray-700 font-medium">Иван Петров</span>
+                <span class="text-gray-700 font-medium dark:text-slate-200">Иван Петров</span>
             </button>
             
             <!-- Выпадающее меню -->
             <div 
               v-if="isUserMenuOpen"
-              class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 border border-gray-100"
+              class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 border border-gray-100 dark:border-slate-700 dark:bg-slate-900"
               v-click-outside="closeUserMenu"
             >
               <a 

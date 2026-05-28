@@ -1,0 +1,56 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    color-scheme: light;
+  }
+
+  html.dark {
+    color-scheme: dark;
+  }
+
+  body {
+    @apply bg-white text-slate-950 transition-colors;
+  }
+
+  html.dark body {
+    @apply bg-slate-950 text-slate-100;
+  }
+
+  html.dark .bg-white {
+    @apply bg-slate-900;
+  }
+
+  html.dark .bg-slate-50 {
+    @apply bg-slate-800;
+  }
+
+  html.dark .text-slate-950,
+  html.dark .text-gray-900,
+  html.dark .text-gray-800,
+  html.dark .text-black {
+    @apply text-slate-100;
+  }
+
+  html.dark .text-slate-700,
+  html.dark .text-slate-600,
+  html.dark .text-slate-500,
+  html.dark .text-gray-700,
+  html.dark .text-gray-600 {
+    @apply text-slate-300;
+  }
+
+  html.dark .border-slate-200,
+  html.dark .border-gray-100,
+  html.dark .border-gray-300 {
+    @apply border-slate-700;
+  }
+
+  html.dark .shadow-sm,
+  html.dark .shadow-lg,
+  html.dark .shadow-xl {
+    box-shadow: none;
+  }
+}
