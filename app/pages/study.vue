@@ -24,7 +24,7 @@ const languages = computed(() => tm<string[]>("study.languages"));
           {{ t('study.description') }}
         </p>
         <div class="mt-8 flex flex-col gap-3 sm:flex-row">
-          <LandingLink href="https://app.plyglo.com" styleName="primary">
+          <LandingLink href="https://study.plyglo.com" styleName="primary">
             {{ t('study.start') }}
           </LandingLink>
           <LandingLink href="/shop" styleName="outline">

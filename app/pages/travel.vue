@@ -26,7 +26,7 @@ const routes = computed(() => tm<string[]>("travel.routes"));
           <LandingLink href="https://travel.plyglo.com" styleName="primary">
             {{ t('travel.open') }}
           </LandingLink>
-          <LandingLink href="https://app.plyglo.com" styleName="outline">
+          <LandingLink href="https://study.plyglo.com" styleName="outline">
             {{ t('travel.studyBefore') }}
           </LandingLink>
         </div>
