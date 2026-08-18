@@ -1,5 +1,5 @@
-:80 {
-    root * /srv 
+80 {
+    root * /srv
     encode zstd gzip
 
     handle_path {$SHOP_PATH:/shop-api/*} {
@@ -14,9 +14,14 @@
         reverse_proxy {$KEYCLOAK_UPSTREAM:https://auth.redbeaver.ru}
     }
 
-    @staticAssets path *.css *.js *.mjs *.jpg *.jpeg *.gif *.png *.svg *.ico *.webp *.woff *.woff2
+    @staticAssets {
+        path *.css *.js *.mjs *.jpg *.jpeg *.gif *.png *.svg *.ico *.webp *.woff *.woff2
+    }
     header @staticAssets Cache-Control "public, max-age=2592000, immutable"
 
-    try_files {path} {path}/ /index.html
-    file_server
+    # Главное изменение здесь - добавлен блок handle
+    handle {
+        try_files {path} {path}/ /index.html
+        file_server
+    }
 }
