@@ -1,25 +1,22 @@
 :80 {
-	root * /usr/share/caddy
-	encode zstd gzip
+    root * /srv 
+    encode zstd gzip
 
-	handle_path {$SHOP_PATH:/shop-api/*} {
-		# reverse_proxy {$SHOP_UPSTREAM:http://shop:80}
-		reverse_proxy {$SHOP_UPSTREAM:https://shop.plyglo.com}
-	}
+    handle_path {$SHOP_PATH:/shop-api/*} {
+        reverse_proxy {$SHOP_UPSTREAM:https://shop.plyglo.com}
+    }
 
-	handle_path {$COURSES_API_PATH:/courses-api/*} {
-		# reverse_proxy {$COURSES_API_UPSTREAM:http://courses-api:80}
-		reverse_proxy {$COURSES_API_UPSTREAM:https://api.plyglo.com}
-	}
+    handle_path {$COURSES_API_PATH:/courses-api/*} {
+        reverse_proxy {$COURSES_API_UPSTREAM:https://api.plyglo.com}
+    }
 
-	handle_path {$KEYCLOAK_PATH:/keycloak/*} {
-		# reverse_proxy {$KEYCLOAK_UPSTREAM:http://keycloak:8080}
-		reverse_proxy {$KEYCLOAK_UPSTREAM:https://auth.redbeaver.ru}
-	}
+    handle_path {$KEYCLOAK_PATH:/keycloak/*} {
+        reverse_proxy {$KEYCLOAK_UPSTREAM:https://auth.redbeaver.ru}
+    }
 
-	@staticAssets path *.css *.js *.mjs *.jpg *.jpeg *.gif *.png *.svg *.ico *.webp *.woff *.woff2
-	header @staticAssets Cache-Control "public, max-age=2592000, immutable"
+    @staticAssets path *.css *.js *.mjs *.jpg *.jpeg *.gif *.png *.svg *.ico *.webp *.woff *.woff2
+    header @staticAssets Cache-Control "public, max-age=2592000, immutable"
 
-	try_files {path} {path}/ /index.html
-	file_server
+    try_files {path} {path}/ /index.html
+    file_server
 }
