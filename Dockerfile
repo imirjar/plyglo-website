@@ -8,8 +8,8 @@ RUN npm run generate
 
 FROM nginx:alpine
 RUN apk add --no-cache curl
-COPY --from=build /app/dist /usr/share/nginx/html
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=build /app/dist /var/www/site
+COPY nginx.conf /etc/nginx/nginx.conf
 
 EXPOSE 80
 
