@@ -1,19 +1,24 @@
-FROM node:24-alpine AS build
-
+FROM node:20-alpine AS builder
 WORKDIR /app
+
 COPY package*.json ./
 RUN npm ci
+
 COPY . .
-RUN npm run generate
+RUN npm run build
 
-FROM nginx:alpine
-RUN apk add --no-cache curl
-COPY --from=build /app/dist /var/www/site
-COPY nginx.conf /etc/nginx/nginx.conf
+# ---- Этап 2: рантайм ----
+FROM node:20-alpine
+WORKDIR /app
 
-EXPOSE 80
+# Копируем только собранный бандл
+COPY --from=builder /app/.output ./.output
 
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD curl -f http://localhost/ || exit 1
+# Критически важно для доступа из других контейнеров
+ENV NODE_ENV=production
+ENV HOST=0.0.0.0
+ENV PORT=3000
 
-CMD ["nginx", "-g", "daemon off;"]
+EXPOSE 3000
+
+CMD ["node", ".output/server/index.mjs"]

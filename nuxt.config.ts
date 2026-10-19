@@ -49,4 +49,14 @@ export default defineNuxtConfig({
     sharedPrerenderData: false,
     viteEnvironmentApi: true,
   },
+
+  // 👇 новое
+  runtimeConfig: {
+    public: {
+      // в dev это относительный '/api' — работает через vite-прокси на :3000
+      // в prod переопределяется через NUXT_PUBLIC_API_BASE
+      apiBase: '/api',
+    },
+  },
+  
 });

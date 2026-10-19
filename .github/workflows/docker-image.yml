@@ -12,6 +12,7 @@ env:
 permissions:
   contents: read
   packages: write
+  id-token: write # Требуется для аттестации provenance
 
 jobs:
   docker:
@@ -34,7 +35,8 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
             type=ref,event=tag
-            type=raw,value=latest
+            type=semver,pattern={{version}}
+            type=raw,value=latest,enable=${{ startsWith(github.ref, 'refs/tags/v') && !contains(github.ref, '-') }}
 
       - name: Build and push image
         uses: docker/build-push-action@v6
@@ -44,3 +46,5 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
